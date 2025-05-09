@@ -42,7 +42,7 @@
                                 @foreach ($orders as $order)
                                     <tr class="border-b dark:border-gray-700">
                                         <td class="px-4 py-3">
-                                            {{ $order->user->name }}
+                                            {{ $order->user->name ?? 'N/A' }}
                                             @if ($order->payment_status == 'DP' && $order->evidencetf2 != null)
                                                 <span
                                                     class="bg-yellow-500 text-white text-sm font-semibold inline-flex items-center p-1.5 rounded-full">
