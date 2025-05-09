@@ -10,10 +10,11 @@ use App\Models\Shipment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $category = Category::where('name', '!=', null)->count();
         $product = Product::where('name', '!=', null)->count();
@@ -27,9 +28,21 @@ class AdminController extends Controller
         $free = Order::where('shipping_method', 'Gratis Pengiriman')->count();
         $ekspedisi = Order::where('shipping_method', 'Ekspedisi')->count();
         $user = User::where('roles', 'user')->count();
+
+        // Default periode adalah 30 hari
+        $period = $request->period ?? 30;
+        $validPeriods = [7, 30, 90];
+
+        if (!in_array((int)$period, $validPeriods)) {
+            $period = 30;
+        }
+
+        $startDate = Carbon::now()->subDays($period);
+
         $topSelling = Order::with(['orderDetail', 'orderDetail.product'])
             ->where('status', '1')
             ->where('order_status', 'Diterima')
+            ->where('orders.created_at', '>=', $startDate)
             ->join('order_details', 'orders.id', '=', 'order_details.order_id')
             ->join('products', 'order_details.product_id', '=', 'products.id')
             ->select('products.*', DB::raw('SUM(order_details.qty_order) as total_sold'))
@@ -38,6 +51,69 @@ class AdminController extends Controller
             ->limit(5)
             ->get();
 
-        return view('admin.index', compact('category', 'product', 'fcustom', 'dppay', 'clearpay', 'proces', 'ready', 'send', 'accept', 'free', 'ekspedisi', 'user', 'topSelling'));
+        $periodFilter = $request->periodFilter ?? 30;
+        $validPeriods = [7, 30, 90];
+
+        if (!in_array((int)$periodFilter, $validPeriods)) {
+            $periodFilter = 30;
+        }
+
+        $startDateFilter = Carbon::now()->subDays($periodFilter);
+
+        $topSellingFilter = Order::with(['orderDetail', 'orderDetail.product'])
+            ->where('status', '1')
+            ->where('order_status', 'Diterima')
+            ->where('orders.created_at', '>=', $startDateFilter)
+            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->join('products', 'order_details.product_id', '=', 'products.id')
+            ->select('products.*', DB::raw('SUM(order_details.qty_order) as total_sold'))
+            ->groupBy('products.id')
+            ->orderBy('total_sold', 'desc')
+            ->limit(5)
+            ->get();
+
+        $totalSoldFilter = $topSellingFilter->sum('total_sold');
+        $dataFilter = $topSellingFilter->map(function ($product) use ($totalSoldFilter) {
+            $percentageFilter = $totalSoldFilter > 0 ? round(($product->total_sold / $totalSoldFilter) * 100, 2) : 0;
+
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'units' => $product->total_sold,
+                'percentage' => $percentageFilter
+            ];
+        });
+
+        return view('admin.index', compact('category', 'product', 'fcustom', 'dppay', 'clearpay', 'proces', 'ready', 'send', 'accept', 'free', 'ekspedisi', 'user', 'topSelling', 'period', 'dataFilter'));
+    }
+
+    public function getTopProducts($period)
+    {
+        $validPeriods = [7, 30, 90];
+        
+        if (!in_array((int)$period, $validPeriods)) {
+            $period = 30;
+        }
+        
+        $startDate = Carbon::now()->subDays($period);
+        
+        $topSelling = Order::with(['orderDetail', 'orderDetail.product'])
+            ->where('status', '1')
+            ->where('order_status', 'Diterima')
+            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->join('products', 'order_details.product_id', '=', 'products.id')
+            ->where('order_details.created_at', '>=', $startDate)
+            ->select('products.*', DB::raw('SUM(order_details.qty_order) as total_sold'))
+            ->groupBy('products.id')
+            ->orderBy('total_sold', 'desc')
+            ->limit(5)
+            ->get();
+            
+        $totalSold = $topSelling->sum('total_sold');
+        
+        return response()->json([
+            'topSelling' => $topSelling,
+            'totalSold' => $totalSold
+        ]);
     }
 }

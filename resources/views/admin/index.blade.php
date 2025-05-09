@@ -205,7 +205,7 @@
                     <div class="flex items-center">
                         <select id="periodeFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                             <option value="7">7 Hari Terakhir</option>
-                            <option value="30">30 Hari Terakhir</option>
+                            <option value="30" selected>30 Hari Terakhir</option>
                             <option value="90">3 Bulan Terakhir</option>
                         </select>
                         <button class="ml-2 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
@@ -226,7 +226,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="w-1/2">
+                    <div class="ami w-1/2">
                         <ul class="space-y-4">
                             @php 
                                 $colorCodes = [
@@ -261,10 +261,39 @@
     </section>
 @endsection
 
+@push('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    initDonutChart();
+    
+    const periodeFilter = document.getElementById('periodeFilter');
+    if (periodeFilter) {
+        periodeFilter.addEventListener('change', function() {
+            const periode = this.value;
+            
+            const chartContainer = document.querySelector('.donut-chart');
+            chartContainer.innerHTML = '<div class="flex items-center justify-center h-full"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div></div>';
+            
+            fetch(`/admin/top-products/${periode}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateChart(data.topSelling, data.totalSold);
+                updateProductList(data.topSelling);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                chartContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-500">Gagal memuat data</div>';
+            });
+        });
+    }
+});
+
 function initDonutChart() {
-    // Data dari controller
-    // Definisikan warna yang konsisten untuk diagram dan daftar
     const colorCodes = [
         'rgb(99, 102, 241)',    // indigo-500
         'rgb(16, 185, 129)',    // emerald-500
@@ -273,82 +302,170 @@ function initDonutChart() {
         'rgb(168, 85, 247)'     // purple-500
     ];
     
-    const data = [
-        @foreach($topSelling as $index => $product)
-            {
-                name: '{{ $product->name }}',
-                value: {{ round(($product->total_sold / $topSelling->sum('total_sold')) * 100, 2) }},
-                units: {{ $product->total_sold }},
-                color: colorCodes[{{ $index % 5 }}]
-            }{{ $loop->last ? '' : ',' }}
-        @endforeach
-    ];
+    const chartContainer = document.querySelector('.donut-chart');
+    if (!chartContainer) return;
     
-    document.addEventListener('DOMContentLoaded', function() {
-        const chartContainer = document.querySelector('.donut-chart');
-        let svgNS = "http://www.w3.org/2000/svg";
-        let svg = document.createElementNS(svgNS, "svg");
-        svg.setAttribute('width', '100%');
-        svg.setAttribute('height', '100%');
-        svg.setAttribute('viewBox', '0 0 100 100');
+    const textElement = chartContainer.querySelector('div.absolute');
+    chartContainer.innerHTML = '';
+    
+    if (textElement) {
+        chartContainer.appendChild(textElement);
+    }
+    
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', '100%');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    
+    const outerRadius = 40;
+    const innerRadius = 32;
+    
+    const topSelling = @json($topSelling);
+    const totalSold = topSelling.reduce((sum, product) => sum + parseInt(product.total_sold), 0);
+    
+    let cumulativePercent = 0;
+    
+    topSelling.forEach((product, index) => {
+        const percentage = (product.total_sold / totalSold) * 100;
         
-        // Ukuran lingkaran luar
-        const outerRadius = 40;
-        // Ukuran lingkaran dalam (untuk donut yang lebih tipis)
-        const innerRadius = 32;
+        let startX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+        let startY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
         
-        let cumulativePercent = 0;
+        cumulativePercent += percentage;
         
-        data.forEach(segment => {
-            let startX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-            let startY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-            
-            cumulativePercent += segment.value;
-            
-            let endX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-            let endY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-            
-            let largeArcFlag = segment.value > 50 ? 1 : 0;
-            
-            let pathData = [
-                `M ${startX} ${startY}`,
-                `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${endX} ${endY}`,
-                `L 50 50`,
-                `Z`
-            ].join(' ');
-            
-            let path = document.createElementNS(svgNS, "path");
-            path.setAttribute('d', pathData);
-            path.setAttribute('fill', segment.color);
-            path.setAttribute('stroke', '#fff');
-            path.setAttribute('stroke-width', '1');
-            
-            svg.appendChild(path);
-        });
+        let endX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+        let endY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
         
-        // Menambahkan lingkaran di tengah untuk efek donat
-        let circle = document.createElementNS(svgNS, "circle");
-        circle.setAttribute('cx', '50');
-        circle.setAttribute('cy', '50');
-        circle.setAttribute('r', innerRadius);
-        circle.setAttribute('fill', '#fff');
-        svg.appendChild(circle);
+        let largeArcFlag = percentage > 50 ? 1 : 0;
         
-        chartContainer.appendChild(svg);
+        let pathData = [
+            `M ${startX} ${startY}`,
+            `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${endX} ${endY}`,
+            `L 50 50`,
+            `Z`
+        ].join(' ');
+        
+        let path = document.createElementNS(svgNS, "path");
+        path.setAttribute('d', pathData);
+        path.setAttribute('fill', colorCodes[index % colorCodes.length]);
+        path.setAttribute('stroke', '#fff');
+        path.setAttribute('stroke-width', '1');
+        
+        svg.appendChild(path);
     });
+    
+    let circle = document.createElementNS(svgNS, "circle");
+    circle.setAttribute('cx', '50');
+    circle.setAttribute('cy', '50');
+    circle.setAttribute('r', innerRadius);
+    circle.setAttribute('fill', '#fff');
+    svg.appendChild(circle);
+    
+    chartContainer.insertBefore(svg, chartContainer.firstChild);
 }
 
-// Inisialisasi donut chart saat halaman dimuat
-initDonutChart();
+function updateChart(topSelling, totalSold) {
+    const chartContainer = document.querySelector('.donut-chart');
+    chartContainer.innerHTML = '';
+    
+    const colorCodes = [
+        'rgb(99, 102, 241)',    // indigo-500
+        'rgb(16, 185, 129)',    // emerald-500
+        'rgb(6, 182, 212)',     // cyan-500
+        'rgb(249, 115, 22)',    // orange-500
+        'rgb(168, 85, 247)'     // purple-500
+    ];
+    
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', '100%');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    
+    const outerRadius = 40;
+    const innerRadius = 32;
+    
+    let cumulativePercent = 0;
+    
+    topSelling.forEach((product, index) => {
+        const percentage = (product.total_sold / totalSold) * 100;
+        
+        let startX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+        let startY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+        
+        cumulativePercent += percentage;
+        
+        let endX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+        let endY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+        
+        let largeArcFlag = percentage > 50 ? 1 : 0;
+        
+        let pathData = [
+            `M ${startX} ${startY}`,
+            `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${endX} ${endY}`,
+            `L 50 50`,
+            `Z`
+        ].join(' ');
+        
+        let path = document.createElementNS(svgNS, "path");
+        path.setAttribute('d', pathData);
+        path.setAttribute('fill', colorCodes[index % colorCodes.length]);
+        path.setAttribute('stroke', '#fff');
+        path.setAttribute('stroke-width', '1');
+        
+        svg.appendChild(path);
+    });
+    
+    let circle = document.createElementNS(svgNS, "circle");
+    circle.setAttribute('cx', '50');
+    circle.setAttribute('cy', '50');
+    circle.setAttribute('r', innerRadius);
+    circle.setAttribute('fill', '#fff');
+    svg.appendChild(circle);
+    
+    chartContainer.appendChild(svg);
+    
+    const textContainer = document.createElement('div');
+    textContainer.className = 'absolute inset-0 flex items-center justify-center flex-col';
+    textContainer.innerHTML = `
+        <span class="text-3xl font-bold text-gray-900 dark:text-white">${totalSold}</span>
+        <span class="text-sm text-gray-500 dark:text-gray-300">Total Terjual</span>
+    `;
+    chartContainer.appendChild(textContainer);
+}
 
-// Event listener untuk dropdown periode (dapat diimplementasikan dengan AJAX jika diperlukan)
-document.addEventListener('DOMContentLoaded', function() {
-    const periodeFilter = document.getElementById('periodeFilter');
-    if (periodeFilter) {
-        periodeFilter.addEventListener('change', function() {
-            // Implementasi filter periode dapat ditambahkan di sini dengan AJAX call
-            // ke endpoint yang mengembalikan data untuk periode tertentu
-        });
-    }
-});
+function updateProductList(topSelling) {
+    const productList = document.querySelector('.ami ul');
+    productList.innerHTML = '';
+    
+    const colorCodes = [
+        'rgb(99, 102, 241)',    // indigo-500
+        'rgb(16, 185, 129)',    // emerald-500
+        'rgb(6, 182, 212)',     // cyan-500
+        'rgb(249, 115, 22)',    // orange-500
+        'rgb(168, 85, 247)'     // purple-500
+    ];
+    
+    const totalSold = topSelling.reduce((sum, product) => sum + parseInt(product.total_sold), 0);
+    
+    topSelling.forEach((product, index) => {
+        const percentage = ((product.total_sold / totalSold) * 100).toFixed(2);
+        const listItem = document.createElement('li');
+        listItem.className = 'flex items-center';
+        listItem.innerHTML = `
+            <div class="mr-3">
+                <div class="w-3 h-3 rounded-lg" style="background-color: ${colorCodes[index % colorCodes.length]};"></div>
+            </div>
+            <div class="flex-1">
+                <h4 class="text-sm font-medium text-gray-900 dark:text-white">${product.name}</h4>
+                <div class="flex justify-between text-xs text-gray-500 dark:text-gray-300">
+                    <span>${product.total_sold} unit (${percentage}%)</span>
+                </div>
+            </div>
+        `;
+        productList.appendChild(listItem);
+    });
+}
 </script>
+@endpush

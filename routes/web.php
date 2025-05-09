@@ -56,6 +56,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware('admin', 'verified')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/admin/top-products/{period}', [AdminController::class, 'getTopProducts'])->name('admin.top-products');
     Route::get('/admin/category/checkSlug', [AdminCategoryController::class, 'checkSlug']);
     Route::get('/admin/product/checkSlug', [AdminProductController::class, 'checkSlug']);
     Route::resource('/admin/category', AdminCategoryController::class);
@@ -79,6 +80,7 @@ Route::middleware('admin', 'verified')->group(function () {
     Route::get('/admin/fullcustom/allRead', [AdminFullCustomController::class, 'allRead'])->name('allRead');
     Route::post('/admin/fullcustom/send/{id}', [AdminFullCustomController::class, 'sendMessageAdmin']);
     Route::delete('/admin/fullcustom/delete/{id}', [AdminFullCustomController::class, 'delete_full_custom']);
+    Route::get('/admin/top-selling-data', [AdminController::class, 'getTopSellingData'])->name('admin.topSellingData');
 });
 
 Route::middleware('auth', 'verified')->group(function () {
