@@ -215,8 +215,8 @@
                         </button>
                     </div>
                 </div>
-                <div class="flex">
-                    <div class="w-1/2">
+                <div class="flex flex-col lg:flex-row">
+                    <div class="w-full lg:w-1/2">
                         <div class="chart-container relative h-64 w-full">
                             <div class="donut-chart relative w-64 h-64 mx-auto">
                                 @if($topSelling->sum('total_sold') > 0)
@@ -233,7 +233,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="ami w-1/2">
+                    <div class="ami w-full lg:w-1/2 mt-6 lg:mt-0">
                         @php 
                             $colorCodes = [
                                 'rgb(99, 102, 241)',   // indigo-500
