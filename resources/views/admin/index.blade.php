@@ -359,36 +359,48 @@ function initDonutChart() {
     const outerRadius = 40;
     const innerRadius = 32;
     
-    let cumulativePercent = 0;
-    
-    topSelling.forEach((product, index) => {
-        const percentage = (product.total_sold / totalSold) * 100;
+    // Jika hanya ada 1 produk, gambar lingkaran penuh
+    if (topSelling.length === 1) {
+        let circle = document.createElementNS(svgNS, "circle");
+        circle.setAttribute('cx', '50');
+        circle.setAttribute('cy', '50');
+        circle.setAttribute('r', outerRadius);
+        circle.setAttribute('fill', colorCodes[0]);
+        circle.setAttribute('stroke', '#fff');
+        circle.setAttribute('stroke-width', '1');
+        svg.appendChild(circle);
+    } else {
+        let cumulativePercent = 0;
         
-        let startX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-        let startY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-        
-        cumulativePercent += percentage;
-        
-        let endX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-        let endY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-        
-        let largeArcFlag = percentage > 50 ? 1 : 0;
-        
-        let pathData = [
-            `M ${startX} ${startY}`,
-            `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${endX} ${endY}`,
-            `L 50 50`,
-            `Z`
-        ].join(' ');
-        
-        let path = document.createElementNS(svgNS, "path");
-        path.setAttribute('d', pathData);
-        path.setAttribute('fill', colorCodes[index % colorCodes.length]);
-        path.setAttribute('stroke', '#fff');
-        path.setAttribute('stroke-width', '1');
-        
-        svg.appendChild(path);
-    });
+        topSelling.forEach((product, index) => {
+            const percentage = (product.total_sold / totalSold) * 100;
+            
+            let startX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+            let startY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+            
+            cumulativePercent += percentage;
+            
+            let endX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+            let endY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+            
+            let largeArcFlag = percentage > 50 ? 1 : 0;
+            
+            let pathData = [
+                `M ${startX} ${startY}`,
+                `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${endX} ${endY}`,
+                `L 50 50`,
+                `Z`
+            ].join(' ');
+            
+            let path = document.createElementNS(svgNS, "path");
+            path.setAttribute('d', pathData);
+            path.setAttribute('fill', colorCodes[index % colorCodes.length]);
+            path.setAttribute('stroke', '#fff');
+            path.setAttribute('stroke-width', '1');
+            
+            svg.appendChild(path);
+        });
+    }
     
     let circle = document.createElementNS(svgNS, "circle");
     circle.setAttribute('cx', '50');
@@ -421,36 +433,48 @@ function updateChart(topSelling, totalSold) {
     const outerRadius = 40;
     const innerRadius = 32;
     
-    let cumulativePercent = 0;
-    
-    topSelling.forEach((product, index) => {
-        const percentage = (product.total_sold / totalSold) * 100;
+    // Jika hanya ada 1 produk, gambar lingkaran penuh
+    if (topSelling.length === 1) {
+        let circle = document.createElementNS(svgNS, "circle");
+        circle.setAttribute('cx', '50');
+        circle.setAttribute('cy', '50');
+        circle.setAttribute('r', outerRadius);
+        circle.setAttribute('fill', colorCodes[0]);
+        circle.setAttribute('stroke', '#fff');
+        circle.setAttribute('stroke-width', '1');
+        svg.appendChild(circle);
+    } else {
+        let cumulativePercent = 0;
         
-        let startX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-        let startY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-        
-        cumulativePercent += percentage;
-        
-        let endX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-        let endY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
-        
-        let largeArcFlag = percentage > 50 ? 1 : 0;
-        
-        let pathData = [
-            `M ${startX} ${startY}`,
-            `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${endX} ${endY}`,
-            `L 50 50`,
-            `Z`
-        ].join(' ');
-        
-        let path = document.createElementNS(svgNS, "path");
-        path.setAttribute('d', pathData);
-        path.setAttribute('fill', colorCodes[index % colorCodes.length]);
-        path.setAttribute('stroke', '#fff');
-        path.setAttribute('stroke-width', '1');
-        
-        svg.appendChild(path);
-    });
+        topSelling.forEach((product, index) => {
+            const percentage = (product.total_sold / totalSold) * 100;
+            
+            let startX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+            let startY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+            
+            cumulativePercent += percentage;
+            
+            let endX = Math.cos(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+            let endY = Math.sin(2 * Math.PI * (cumulativePercent / 100) - Math.PI / 2) * outerRadius + 50;
+            
+            let largeArcFlag = percentage > 50 ? 1 : 0;
+            
+            let pathData = [
+                `M ${startX} ${startY}`,
+                `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${endX} ${endY}`,
+                `L 50 50`,
+                `Z`
+            ].join(' ');
+            
+            let path = document.createElementNS(svgNS, "path");
+            path.setAttribute('d', pathData);
+            path.setAttribute('fill', colorCodes[index % colorCodes.length]);
+            path.setAttribute('stroke', '#fff');
+            path.setAttribute('stroke-width', '1');
+            
+            svg.appendChild(path);
+        });
+    }
     
     let circle = document.createElementNS(svgNS, "circle");
     circle.setAttribute('cx', '50');
