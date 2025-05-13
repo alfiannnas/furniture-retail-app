@@ -6,7 +6,6 @@ use App\Models\Category;
 use App\Models\FullCustom;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\Shipment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +28,6 @@ class AdminController extends Controller
         $ekspedisi = Order::where('shipping_method', 'Ekspedisi')->count();
         $user = User::where('roles', 'user')->count();
 
-        // Default periode adalah 30 hari
         $period = $request->period ?? 30;
         $validPeriods = [7, 30, 90];
 
@@ -37,14 +35,15 @@ class AdminController extends Controller
             $period = 30;
         }
 
-        $startDate = Carbon::now()->subDays($period);
+        $today = Carbon::now();
+        $startDate = $today->copy()->subDays($period)->format('Y-m-d');
 
         $topSelling = Order::with(['orderDetail', 'orderDetail.product'])
             ->where('status', '1')
             ->where('order_status', 'Diterima')
-            ->where('orders.created_at', '>=', $startDate)
             ->join('order_details', 'orders.id', '=', 'order_details.order_id')
             ->join('products', 'order_details.product_id', '=', 'products.id')
+            ->where('order_details.created_at', '>=', $startDate)
             ->select('products.*', DB::raw('SUM(order_details.qty_order) as total_sold'))
             ->groupBy('products.id')
             ->orderBy('total_sold', 'desc')
@@ -63,15 +62,15 @@ class AdminController extends Controller
         $topSellingFilter = Order::with(['orderDetail', 'orderDetail.product'])
             ->where('status', '1')
             ->where('order_status', 'Diterima')
-            ->where('orders.created_at', '>=', $startDateFilter)
             ->join('order_details', 'orders.id', '=', 'order_details.order_id')
             ->join('products', 'order_details.product_id', '=', 'products.id')
+            ->where('order_details.created_at', '>=', $startDate)
             ->select('products.*', DB::raw('SUM(order_details.qty_order) as total_sold'))
             ->groupBy('products.id')
             ->orderBy('total_sold', 'desc')
             ->limit(5)
             ->get();
-
+            
         $totalSoldFilter = $topSellingFilter->sum('total_sold');
         $dataFilter = $topSellingFilter->map(function ($product) use ($totalSoldFilter) {
             $percentageFilter = $totalSoldFilter > 0 ? round(($product->total_sold / $totalSoldFilter) * 100, 2) : 0;
@@ -94,8 +93,9 @@ class AdminController extends Controller
         if (!in_array((int)$period, $validPeriods)) {
             $period = 30;
         }
-        
-        $startDate = Carbon::now()->subDays($period);
+
+        $today = Carbon::now();
+        $startDate = $today->copy()->subDays($period)->format('Y-m-d');
         
         $topSelling = Order::with(['orderDetail', 'orderDetail.product'])
             ->where('status', '1')
