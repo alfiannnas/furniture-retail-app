@@ -219,41 +219,56 @@
                     <div class="w-1/2">
                         <div class="chart-container relative h-64 w-full">
                             <div class="donut-chart relative w-64 h-64 mx-auto">
-                                <div class="absolute inset-0 flex items-center justify-center flex-col">
-                                    <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ $topSelling->sum('total_sold') }}</span>
-                                    <span class="text-sm text-gray-500 dark:text-gray-300">Total Terjual</span>
-                                </div>
+                                @if($topSelling->sum('total_sold') > 0)
+                                    <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                        <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ $topSelling->sum('total_sold') }}</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-300">Total Terjual</span>
+                                    </div>
+                                @else
+                                    <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                        <span class="text-3xl font-bold text-gray-900 dark:text-white">0</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-300">Belum Ada Penjualan</span>
+                                    </div>
+                                @endif  
                             </div>
                         </div>
                     </div>
                     <div class="ami w-1/2">
-                        <ul class="space-y-4">
-                            @php 
-                                $colorCodes = [
-                                    'rgb(99, 102, 241)',   // indigo-500
-                                    'rgb(16, 185, 129)',   // emerald-500
-                                    'rgb(6, 182, 212)',    // cyan-500
-                                    'rgb(249, 115, 22)',   // orange-500
-                                    'rgb(168, 85, 247)'    // purple-500
-                                ];
-                                $colors = ['bg-indigo-500', 'bg-emerald-500', 'bg-cyan-500', 'bg-orange-500', 'bg-purple-500'];
-                                $totalSold = $topSelling->sum('total_sold');
-                            @endphp
-                            
-                            @foreach($topSelling as $index => $product)
-                                <li class="flex items-center">
-                                    <div class="mr-3">
-                                        <div class="w-3 h-3 rounded-lg" style="background-color: {{ $colorCodes[$index % count($colorCodes)] }};"></div>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ $product->name }}</h4>
-                                        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-300">
-                                            <span>{{ $product->total_sold }} unit ({{ round(($product->total_sold / $totalSold) * 100, 2) }}%)</span>
+                        @php 
+                            $colorCodes = [
+                                'rgb(99, 102, 241)',   // indigo-500
+                                'rgb(16, 185, 129)',   // emerald-500
+                                'rgb(6, 182, 212)',    // cyan-500
+                                'rgb(249, 115, 22)',   // orange-500
+                                'rgb(168, 85, 247)'    // purple-500
+                            ];
+                            $colors = ['bg-indigo-500', 'bg-emerald-500', 'bg-cyan-500', 'bg-orange-500', 'bg-purple-500'];
+                            $totalSold = $topSelling->sum('total_sold');
+                        @endphp
+                        
+                        <div class="space-y-4">
+                            @if($totalSold > 0)
+                                @foreach($topSelling as $index => $product)
+                                    <div class="flex items-center">
+                                        <div class="mr-3">
+                                            <div class="w-3 h-3 rounded-lg" style="background-color: {{ $colorCodes[$index % count($colorCodes)] }};"></div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ $product->name }}</h4>
+                                            <div class="flex justify-between text-xs text-gray-500 dark:text-gray-300">
+                                                <span>{{ $product->total_sold }} unit ({{ round(($product->total_sold / $totalSold) * 100, 2) }}%)</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </li>
-                            @endforeach
-                        </ul>
+                                @endforeach
+                            @else
+                                <div class="flex items-center justify-center h-64">
+                                    <div class="text-center">
+                                        <p class="text-gray-500 dark:text-gray-400">Belum ada produk yang terjual</p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -312,6 +327,29 @@ function initDonutChart() {
         chartContainer.appendChild(textElement);
     }
     
+    const topSelling = @json($topSelling);
+    const totalSold = topSelling.reduce((sum, product) => sum + parseInt(product.total_sold), 0);
+    
+    if (totalSold === 0) {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const svg = document.createElementNS(svgNS, "svg");
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        svg.setAttribute('viewBox', '0 0 100 100');
+        
+        let circle = document.createElementNS(svgNS, "circle");
+        circle.setAttribute('cx', '50');
+        circle.setAttribute('cy', '50');
+        circle.setAttribute('r', '40');
+        circle.setAttribute('fill', '#f3f4f6');
+        circle.setAttribute('stroke', '#e5e7eb');
+        circle.setAttribute('stroke-width', '1');
+        svg.appendChild(circle);
+        
+        chartContainer.insertBefore(svg, chartContainer.firstChild);
+        return;
+    }
+    
     const svgNS = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(svgNS, "svg");
     svg.setAttribute('width', '100%');
@@ -320,9 +358,6 @@ function initDonutChart() {
     
     const outerRadius = 40;
     const innerRadius = 32;
-    
-    const topSelling = @json($topSelling);
-    const totalSold = topSelling.reduce((sum, product) => sum + parseInt(product.total_sold), 0);
     
     let cumulativePercent = 0;
     
@@ -436,7 +471,7 @@ function updateChart(topSelling, totalSold) {
 }
 
 function updateProductList(topSelling) {
-    const productList = document.querySelector('.ami ul');
+    const productList = document.querySelector('.ami .space-y-4');
     productList.innerHTML = '';
     
     const colorCodes = [
@@ -449,23 +484,34 @@ function updateProductList(topSelling) {
     
     const totalSold = topSelling.reduce((sum, product) => sum + parseInt(product.total_sold), 0);
     
-    topSelling.forEach((product, index) => {
-        const percentage = ((product.total_sold / totalSold) * 100).toFixed(2);
-        const listItem = document.createElement('li');
-        listItem.className = 'flex items-center';
-        listItem.innerHTML = `
-            <div class="mr-3">
-                <div class="w-3 h-3 rounded-lg" style="background-color: ${colorCodes[index % colorCodes.length]};"></div>
-            </div>
-            <div class="flex-1">
-                <h4 class="text-sm font-medium text-gray-900 dark:text-white">${product.name}</h4>
-                <div class="flex justify-between text-xs text-gray-500 dark:text-gray-300">
-                    <span>${product.total_sold} unit (${percentage}%)</span>
+    if (totalSold > 0) {
+        topSelling.forEach((product, index) => {
+            const percentage = ((product.total_sold / totalSold) * 100).toFixed(2);
+            const productItem = document.createElement('div');
+            productItem.className = 'flex items-center';
+            productItem.innerHTML = `
+                <div class="mr-3">
+                    <div class="w-3 h-3 rounded-lg" style="background-color: ${colorCodes[index % colorCodes.length]};"></div>
                 </div>
+                <div class="flex-1">
+                    <h4 class="text-sm font-medium text-gray-900 dark:text-white">${product.name}</h4>
+                    <div class="flex justify-between text-xs text-gray-500 dark:text-gray-300">
+                        <span>${product.total_sold} unit (${percentage}%)</span>
+                    </div>
+                </div>
+            `;
+            productList.appendChild(productItem);
+        });
+    } else {
+        const emptyItem = document.createElement('div');
+        emptyItem.className = 'flex items-center justify-center h-64';
+        emptyItem.innerHTML = `
+            <div class="text-center">
+                <p class="text-gray-500 dark:text-gray-400">Belum ada produk yang terjual</p>
             </div>
         `;
-        productList.appendChild(listItem);
-    });
+        productList.appendChild(emptyItem);
+    }
 }
 </script>
 @endpush
