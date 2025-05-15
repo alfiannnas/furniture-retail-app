@@ -215,6 +215,7 @@
                         </button>
                     </div>
                 </div>
+                <hr>
                 <div class="flex flex-col lg:flex-row">
                     <div class="w-full lg:w-1/2">
                         <div class="chart-container relative h-64 w-full">
@@ -246,28 +247,28 @@
                             $totalSold = $topSelling->sum('total_sold');
                         @endphp
                         
-                        <div class="space-y-4">
-                            @if($totalSold > 0)
-                                @foreach($topSelling as $index => $product)
-                                    <div class="flex items-center">
-                                        <div class="mr-3">
-                                            <div class="w-3 h-3 rounded-lg" style="background-color: {{ $colorCodes[$index % count($colorCodes)] }};"></div>
-                                        </div>
-                                        <div class="flex-1">
-                                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ $product->name }}</h4>
-                                            <div class="flex justify-between text-xs text-gray-500 dark:text-gray-300">
-                                                <span>{{ $product->total_sold }} unit ({{ round(($product->total_sold / $totalSold) * 100, 2) }}%)</span>
+                        <div class="h-full flex items-center">
+                            <div class="w-full space-y-4">
+                                @if($totalSold > 0)
+                                    @foreach($topSelling as $index => $product)
+                                        <div class="flex items-center">
+                                            <div class="mr-3">
+                                                <div class="w-3 h-3 rounded-lg" style="background-color: {{ $colorCodes[$index % count($colorCodes)] }};"></div>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ $product->name }}</h4>
+                                                <div class="flex justify-between text-xs text-gray-500 dark:text-gray-300">
+                                                    <span>{{ $product->total_sold }} unit ({{ round(($product->total_sold / $totalSold) * 100, 2) }}%)</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="flex items-center justify-center h-64">
-                                    <div class="text-center">
+                                    @endforeach
+                                @else
+                                    <div class="flex items-center justify-center h-64">
                                         <p class="text-gray-500 dark:text-gray-400">Belum ada produk yang terjual</p>
                                     </div>
-                                </div>
-                            @endif
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
