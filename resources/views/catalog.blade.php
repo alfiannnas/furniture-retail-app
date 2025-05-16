@@ -31,14 +31,14 @@
                             <div
                                 class="w-full mx-auto max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                                 <a href="product/detail/{{ $product->slug }}">
-                                    <img class="p-4 rounded-t-lg" src="{{ asset('storage/' . $product->product_image) }}"
-                                        alt="{{ $product->name }}" />
+                                    <!-- <img class="p-4 rounded-t-lg" src="{{ asset('storage/' . $product->product_image) }}"
+                                        alt="{{ $product->name }}" /> -->
                                 </a>
                                 <div class="px-5 pb-5">
                                     <div class="flex items-center justify-between">
                                         <div class="mb-2 w-20 text-center">
                                             <p
-                                                class="py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-50 rounded-lg font-normal text-xs">
+                                                class="py-1 mt-4 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-50 rounded-lg font-normal text-xs">
                                                 <a
                                                     href="/categories/{{ $product->category->slug }}">{{ $product->category->name }}</a>
                                             </p>

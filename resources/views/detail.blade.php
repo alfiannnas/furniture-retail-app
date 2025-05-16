@@ -8,8 +8,8 @@
         <div class="flex flex-col px-8 gap-4 lg:flex-row py-4">
             <div class="py-8 max-w-xl lg:py-0">
                 <div>
-                    <img class="h-96 max-w-md rounded-lg" src="{{ asset('storage/' . $product->product_image) }}"
-                        alt="{{ $product->name }}">
+                    <!-- <img class="h-96 max-w-md rounded-lg" src="{{ asset('storage/' . $product->product_image) }}"
+                        alt="{{ $product->name }}"> -->
                 </div>
             </div>
             <div class="py-8 px-4 max-w-2xl lg:py-0">
