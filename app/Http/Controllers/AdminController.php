@@ -38,14 +38,24 @@ class AdminController extends Controller
         $today = Carbon::now();
         $startDate = $today->copy()->subDays($period)->format('Y-m-d');
 
-        $topSelling = Order::with(['orderDetail', 'orderDetail.product'])
-            ->where('status', '1')
-            ->where('order_status', 'Diterima')
-            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
-            ->join('products', 'order_details.product_id', '=', 'products.id')
+        $topSelling = Order::where('status', '1')
+            ->where('orders.order_status', 'Diterima')
+            ->leftJoin('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->leftJoin('products', 'order_details.product_id', '=', 'products.id')
             ->where('order_details.created_at', '>=', $startDate)
-            ->select('products.*', DB::raw('SUM(order_details.qty_order) as total_sold'))
-            ->groupBy('products.id')
+            ->select(
+                'products.id',
+                'products.name',
+                'products.slug',
+                'products.product_image',
+                DB::raw('SUM(order_details.qty_order) as total_sold')
+            )
+            ->groupBy(
+                'products.id',
+                'products.name',
+                'products.slug',
+                'products.product_image'
+            )
             ->orderBy('total_sold', 'desc')
             ->limit(5)
             ->get();
@@ -59,18 +69,28 @@ class AdminController extends Controller
 
         $startDateFilter = Carbon::now()->subDays($periodFilter);
 
-        $topSellingFilter = Order::with(['orderDetail', 'orderDetail.product'])
-            ->where('status', '1')
-            ->where('order_status', 'Diterima')
-            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
-            ->join('products', 'order_details.product_id', '=', 'products.id')
+        $topSellingFilter = Order::where('status', '1')
+            ->where('orders.order_status', 'Diterima')
+            ->leftJoin('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->leftJoin('products', 'order_details.product_id', '=', 'products.id')
             ->where('order_details.created_at', '>=', $startDate)
-            ->select('products.*', DB::raw('SUM(order_details.qty_order) as total_sold'))
-            ->groupBy('products.id')
+            ->select(
+                'products.id',
+                'products.name',
+                'products.slug',
+                'products.product_image',
+                DB::raw('SUM(order_details.qty_order) as total_sold')
+            )
+            ->groupBy(
+                'products.id',
+                'products.name',
+                'products.slug',
+                'products.product_image'
+            )
             ->orderBy('total_sold', 'desc')
             ->limit(5)
             ->get();
-            
+
         $totalSoldFilter = $topSellingFilter->sum('total_sold');
         $dataFilter = $topSellingFilter->map(function ($product) use ($totalSoldFilter) {
             $percentageFilter = $totalSoldFilter > 0 ? round(($product->total_sold / $totalSoldFilter) * 100, 2) : 0;
@@ -89,28 +109,38 @@ class AdminController extends Controller
     public function getTopProducts($period)
     {
         $validPeriods = [7, 30, 90];
-        
+
         if (!in_array((int)$period, $validPeriods)) {
             $period = 30;
         }
 
         $today = Carbon::now();
         $startDate = $today->copy()->subDays($period)->format('Y-m-d');
-        
-        $topSelling = Order::with(['orderDetail', 'orderDetail.product'])
-            ->where('status', '1')
-            ->where('order_status', 'Diterima')
-            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
-            ->join('products', 'order_details.product_id', '=', 'products.id')
+
+        $topSelling = Order::where('status', '1')
+            ->where('orders.order_status', 'Diterima')
+            ->leftJoin('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->leftJoin('products', 'order_details.product_id', '=', 'products.id')
             ->where('order_details.created_at', '>=', $startDate)
-            ->select('products.*', DB::raw('SUM(order_details.qty_order) as total_sold'))
-            ->groupBy('products.id')
+            ->select(
+                'products.id',
+                'products.name',
+                'products.slug',
+                'products.product_image',
+                DB::raw('SUM(order_details.qty_order) as total_sold')
+            )
+            ->groupBy(
+                'products.id',
+                'products.name',
+                'products.slug',
+                'products.product_image'
+            )
             ->orderBy('total_sold', 'desc')
             ->limit(5)
             ->get();
-            
+
         $totalSold = $topSelling->sum('total_sold');
-        
+
         return response()->json([
             'topSelling' => $topSelling,
             'totalSold' => $totalSold
