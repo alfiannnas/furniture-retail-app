@@ -4,30 +4,29 @@
         <div class="mx-auto max-w-screen-sm text-center mb-8 lg:mb-16">
             <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">{{ $product->title }}
             </h2>
-        </div>
-        <div class="flex flex-col px-8 gap-4 lg:flex-row py-4">
+                   <div class="flex flex-col px-8 gap-4 lg:flex-row py-4">
             <div class="py-8 max-w-xl lg:py-0">
                 <div>
                     <!-- <img class="h-96 max-w-md rounded-lg" src="{{ asset('storage/' . $product->product_image) }}"
                         alt="{{ $product->name }}"> -->
                 </div>
             </div>
-            <div class="py-8 px-4 max-w-2xl lg:py-0">
+            <div class="flexpy-8 px-4 max-w-2xl lg:py-0">
                 <h2 class="mb-6 text-2xl font-bold leading-none text-gray-900 md:text-4xl dark:text-white">
                     {{ $product->name }}
                 </h2>
                 <dl class="flex items-center space-x-6">
                     <div>
                         <dt class="mb-2 font-semibold text-xl leading-none text-gray-900 dark:text-white">Kategori</dt>
-                        <dd class="mb-4 font-light text-gray-500 text-lg sm:mb-5 dark:text-gray-400">
+                        <dd class="text-left mb-4 font-light text-gray-500 text-lg sm:mb-5 dark:text-gray-400">
                             <a href="/categories/{{ $product->category->slug }}">{{ $product->category->name }}</a>
                         </dd>
                     </div>
                 </dl>
                 <dl>
-                    <dt class="mb-2 font-semibold leading-none text-xl text-gray-900 dark:text-white">Deskripsi</dt>
+                    <dt class="mb-2 text-left font-semibold leading-none text-xl text-gray-900 dark:text-white">Deskripsi</dt>
                     <dd class="mb-4 font-light text-gray-500 sm:mb-5 text-lg dark:text-gray-400 text-justify">
-                        {{ $product->description }}
+                        {!! $product->description !!}
                     </dd>
                 </dl>
                 <div class="flex items-center space-x-4">
@@ -84,5 +83,8 @@
                     </form>
                 </div>
             </div>
+        </div>
+        </div>
+ 
     </section>
 @endsection
