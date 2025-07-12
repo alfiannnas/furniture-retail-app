@@ -31,8 +31,14 @@
                         <div class="flex items-end">
                             <div class="flex flex-col space-y-2 text-sm max-w-sm mx-2 order-2 items-start">
                                 @if ($mess->user->roles == 'user')
-                                    <div><span
-                                            class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-blue-500 text-gray-200">{{ $mess->body }}</span>
+                                    <div>
+                                        <span
+                                            class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-blue-500 text-gray-200">
+                                            {{ $mess->body }}
+                                        </span>
+                                        <div class="text-xs text-gray-400 mt-1">
+                                            {{ $mess->created_at->format('d M Y H:i') }}
+                                        </div>
                                     </div>
                                 @endif
                             </div>
@@ -42,8 +48,14 @@
                         <div class="flex items-end justify-end">
                             <div class="flex flex-col space-y-2 text-sm max-w-sm mx-2 order-1 items-end">
                                 @if ($mess->user->roles == 'admin')
-                                    <div><span
-                                            class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-yellow-500 text-gray-200">{{ $mess->body }}</span>
+                                    <div>
+                                        <span
+                                            class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-yellow-500 text-gray-200">
+                                            {{ $mess->body }}
+                                        </span>
+                                        <div class="text-xs text-gray-400 mt-1 text-right">
+                                            {{ $mess->created_at->format('d M Y H:i') }}
+                                        </div>
                                     </div>
                                 @endif
                             </div>
