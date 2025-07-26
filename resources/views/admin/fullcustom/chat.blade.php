@@ -16,6 +16,11 @@
                     <div class="flex flex-col leading-tight">
                         <div class="text-2xl mt-1 flex items-center">
                             <span class="text-gray-700 dark:text-gray-100 mr-3">{{ $fullCustom->user->name }}</span>
+                            @if($isChatEnd)
+                                <span class="inline-block px-3 py-1 mt-2 bg-red-500 text-white rounded text-sm font-semibold">
+                                    Chat sudah berakhir
+                                </span>
+                            @endif
                         </div>
                         <span class="text-lg text-gray-600 dark:text-gray-200">Customer</span>
                     </div>
@@ -32,12 +37,11 @@
                             <div class="flex flex-col space-y-2 text-sm max-w-sm mx-2 order-2 items-start">
                                 @if ($mess->user->roles == 'user')
                                     <div>
-                                        <span
-                                            class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-blue-500 text-gray-200">
+                                        <span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-blue-500 text-gray-200">
                                             {{ $mess->body }}
                                         </span>
                                         <div class="text-xs text-gray-400 mt-1">
-                                            {{ $mess->created_at->format('d M Y H:i') }}
+                                            {{ $mess->created_at->timezone('Asia/Jakarta')->format('d M Y H:i') }}
                                         </div>
                                     </div>
                                 @endif
@@ -49,12 +53,11 @@
                             <div class="flex flex-col space-y-2 text-sm max-w-sm mx-2 order-1 items-end">
                                 @if ($mess->user->roles == 'admin')
                                     <div>
-                                        <span
-                                            class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-yellow-500 text-gray-200">
+                                        <span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-yellow-500 text-gray-200">
                                             {{ $mess->body }}
                                         </span>
                                         <div class="text-xs text-gray-400 mt-1 text-right">
-                                            {{ $mess->created_at->format('d M Y H:i') }}
+                                            {{ $mess->created_at->timezone('Asia/Jakarta')->format('d M Y H:i') }}
                                         </div>
                                     </div>
                                 @endif
