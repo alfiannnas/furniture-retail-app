@@ -6,7 +6,6 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Shipment;
 use App\Models\User;
-use App\Models\UserData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -110,21 +109,24 @@ class OrderDetailController extends Controller
 
     public function confirmation()
     {
+        $shipment = Shipment::where('user_id', Auth::user()->id)->first();
 
-        $order = Order::where('user_id', Auth::user()->id)->where('status', 0)->first();
-
-        $userData = UserData::where('user_id', Auth::user()->id)->first();
-        if (empty($userData)) {
-            Alert::error('Gagal', 'Silakan lengkapi Biodata Anda');
+        if (empty($shipment->name) || empty($shipment->address) || empty($shipment->phone_number)) {
+            Alert::error('Gagal', 'Data Alamat Harap Diisi');
             return redirect('orderform');
         }
+
+        $order = Order::where('user_id', Auth::user()->id)->where('status', 0)->first();
 
         $cek_order_details = OrderDetail::where('order_id', $order->id)->first();
         if (empty($cek_order_details)) {
             Alert::error('Gagal', 'Belum ada transaksi');
             return redirect('orderform');
         }
-
+        if (empty($order->shipment_id)) {
+            Alert::error('Gagal', 'Alamat Belum Dipilih');
+            return redirect('orderform');
+        }
         if ($order->payment_option == 'Lunas') {
             $order->remaining_payment = 0;
             $order->payment_status = 'Lunas';
