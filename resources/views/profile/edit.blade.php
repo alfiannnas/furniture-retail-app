@@ -20,12 +20,6 @@
                         <li class="mr-2" role="presentation">
                             <button
                                 class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                                id="address-tab" data-tabs-target="#address" type="button" role="tab"
-                                aria-controls="address" aria-selected="false">Daftar Alamat</button>
-                        </li>
-                        <li class="mr-2" role="presentation">
-                            <button
-                                class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
                                 id="account-tab" data-tabs-target="#account" type="button" role="tab"
                                 aria-controls="account" aria-selected="false">Akun</button>
                         </li>
@@ -45,14 +39,6 @@
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                             <div class="max-w-xl">
                                 @include('profile.partials.biodata')
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="address" role="tabpanel"
-                        aria-labelledby="address-tab">
-                        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                            <div class="w-full">
-                                @include('profile.partials.address-list')
                             </div>
                         </div>
                     </div>

@@ -245,21 +245,14 @@
                                 <h2 class="font-semibold text-gray-900 dark:text-white">Nama</h2>
                             </div>
                             <div class="col-70 font-semibold text-gray-900 dark:text-white">
-                                : {{ $orderdetail->order->shipment->name }}</div>
+                                : {{ $orderdetail->order->user->name }}</div>
                         </div>
                         <div class="row mb-5">
                             <div class="col-30">
                                 <h2 class="font-semibold text-gray-900 dark:text-white">No HP</h2>
                             </div>
                             <div class="col-70 font-semibold text-gray-900 dark:text-white">
-                                : {{ $orderdetail->order->shipment->phone_number }}</div>
-                        </div>
-                        <div class="row mb-5">
-                            <div class="col-30">
-                                <h2 class="font-semibold text-gray-900 dark:text-white">Alamat</h2>
-                            </div>
-                            <div class="col-70 font-semibold text-gray-900 dark:text-white">
-                                : {{ $orderdetail->order->shipment->address }}</div>
+                                : {{ $orderdetail->order->user->userData->phone_number }}</div>
                         </div>
                     </div>
                     <div class="mx-auto mt-5">
