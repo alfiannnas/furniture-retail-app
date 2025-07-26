@@ -28,8 +28,11 @@ class AdminFullCustomController extends Controller
     public function chat(FullCustom $fullCustom, Message $message)
     {
         $messages = Message::where('full_custom_id', $fullCustom->id)->get();
+        $isChatEnd = Message::where('full_custom_id', $fullCustom->id)
+            ->where('is_chat_end', 1)
+            ->exists();
         DB::table('notifications')->where('data->message', $message->id)->update(['read_at' => now()]);
-        return view('admin.fullcustom.chat', compact('fullCustom', 'messages'));
+        return view('admin.fullcustom.chat', compact('fullCustom', 'messages', 'isChatEnd'));
     }
 
     // public function oneRead($id)

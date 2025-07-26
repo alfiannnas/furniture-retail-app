@@ -58,7 +58,11 @@ class FullCustomController extends Controller
     public function fullcustomDetail(FullCustom $fullCustom, Message $message)
     {
         $messages = Message::where('full_custom_id', $fullCustom->id)->get();
-        return view('fcustomorder.show', compact('fullCustom', 'messages'));
+        $isChatEnd = Message::where('full_custom_id', $fullCustom->id)
+            ->where('is_chat_end', 1)
+            ->exists();
+
+        return view('fcustomorder.show', compact('messages', 'fullCustom', 'isChatEnd'));
     }
 
     // public function oneRead($id, FullCustom $fullCustom)
@@ -106,6 +110,15 @@ class FullCustomController extends Controller
         $user_create = auth()->user()->name;
         $userr = auth()->user()->id;
         Notification::send($users, new CreateMessage($chatDetail->id, $chatDetail->full_custom_id, $user_create, $chatDetail->body, $userr));
+
+        return back();
+    }
+
+    public function endChat($id)
+    {
+        $fullCustom = FullCustom::where('id', $id)->where('status', 1)->firstOrFail();
+        Message::where('full_custom_id', $fullCustom->id)
+            ->update(['is_chat_end' => 1]);
 
         return back();
     }

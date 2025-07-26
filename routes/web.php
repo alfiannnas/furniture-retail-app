@@ -76,6 +76,7 @@ Route::middleware('admin', 'verified')->group(function () {
     Route::put('/admin/allorder/shipment/edit/{id}', [AdminOrderController::class, 'updateShipment'])->name('updateShipment');
     Route::get('/admin/fullcustom', [AdminFullCustomController::class, 'index'])->name('full');
     Route::get('/admin/fullcustom/chat/{full_custom:id}', [AdminFullCustomController::class, 'chat'])->name('chat');
+    Route::post('/admin/fullcustom/endchat/{full_custom:id}', [AdminFullCustomController::class, 'endChat'])->name('endChat');
     // Route::get('/admin/fullcustom/message/{id}', [AdminFullCustomController::class, 'oneRead'])->name('oneRead');
     Route::get('/admin/fullcustom/allRead', [AdminFullCustomController::class, 'allRead'])->name('allRead');
     Route::post('/admin/fullcustom/send/{id}', [AdminFullCustomController::class, 'sendMessageAdmin']);
@@ -115,5 +116,6 @@ Route::middleware('auth', 'verified')->group(function () {
     // Route::get('/fullcustom/message/{id}', [FullCustomController::class, 'oneRead'])->name('oneRead');
     // Route::get('/fullcustom/allRead', [FullCustomController::class, 'allRead'])->name('allRead');
     Route::post('/fullcustom/send', [FullCustomController::class, 'sendMessage']);
+    Route::post('/fullcustom/endchat/{full_custom:id}', [FullCustomController::class, 'endChat'])->name('endChat');
 });
 require __DIR__ . '/auth.php';
