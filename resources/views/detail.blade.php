@@ -74,7 +74,7 @@
                         <div class="flex items-center">
                             <label for="remember" class="text-sm font-bold text-gray-900 dark:text-gray-300">Catatan :
                                 Panjang
-                                dan tinggi dalam satuan centimeter</label>
+                                dan tinggi dalam satuan meter</label>
                         </div>
                         <button type="submit"
                             class="text-white inline-flex items-center bg-third font-medium rounded-lg text-sm px-5 py-2.5 mt-5 text-center">
