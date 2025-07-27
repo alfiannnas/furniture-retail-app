@@ -52,9 +52,9 @@ Route::get('/dashboard', function () {
         return redirect('/admin/dashboard');
     }
     return view('home');
-})->middleware(['auth', 'verified']);
+})->middleware(['auth']);
 
-Route::middleware('admin', 'verified')->group(function () {
+Route::middleware('admin')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/admin/top-products/{period}', [AdminController::class, 'getTopProducts'])->name('admin.top-products');
     Route::get('/admin/category/checkSlug', [AdminCategoryController::class, 'checkSlug']);
@@ -84,7 +84,7 @@ Route::middleware('admin', 'verified')->group(function () {
     Route::get('/admin/top-selling-data', [AdminController::class, 'getTopSellingData'])->name('admin.topSellingData');
 });
 
-Route::middleware('auth', 'verified')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::post('/myprofil/update', [UserController::class, 'update']);
     Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/settings', [ProfileController::class, 'update'])->name('profile.update');
