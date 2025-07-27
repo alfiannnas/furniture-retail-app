@@ -35,8 +35,6 @@
                                     <th scope="col" class="px-4 py-3">Total Belanja</th>
                                     <th scope="col" class="px-4 py-3">Status Pesanan</th>
                                     <th scope="col" class="px-4 py-3">Status Pembayaran</th>
-                                    <th scope="col" class="px-4 py-3">Bukti Transfer</th>
-                                    <th scope="col" class="px-4 py-3">Pelunasan</th>
                                     <th scope="col" class="px-4 py-3">Aksi</th>
                                 </tr>
                             </thead>
@@ -76,57 +74,6 @@
                                                 <div
                                                     class="inline-block px-6 py-2.5 bg-lime-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md ">
                                                     {{ $order->order_status }}
-                                                </div>
-                                            @endif
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            @if ($order->payment_status == 'DP')
-                                                <div
-                                                    class="inline-block px-6 py-2.5 bg-sky-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md ">
-                                                    {{ $order->payment_status }}
-                                                </div>
-                                            @elseif ($order->payment_status == 'Lunas')
-                                                <div
-                                                    class="inline-block px-6 py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md ">
-                                                    {{ $order->payment_status }}
-                                                </div>
-                                            @elseif ($order->payment_status == 'Batal')
-                                                <div
-                                                    class="inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md ">
-                                                    {{ $order->payment_status }}
-                                                </div>
-                                            @elseif (!empty($order->evidencetf))
-                                                <div
-                                                    class="inline-block px-6 py-2.5 bg-lime-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md ">
-                                                    Menunggu Konfirmasi
-                                                </div>
-                                            @else
-                                                <div
-                                                    class="inline-block px-6 py-2.5 bg-lime-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md ">
-                                                    {{ $order->payment_status }}
-                                                </div>
-                                            @endif
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            @if ($order->payment_option == 'Lunas')
-                                                <div
-                                                    class="inline-block px-6 py-2.5 bg-stone-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md ">
-                                                    Tidak Tersedia
-                                                </div>
-                                            @elseif (!empty($order->evidencetf))
-                                                <div
-                                                    class="inline-block px-6 py-2.5 bg-sky-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md ">
-                                                    Terupload
-                                                </div>
-                                            @elseif ($order->payment_status == 'Menunggu Pembayaran')
-                                                <a href="/order/evidencetf/{{ $order->id }}" disabled
-                                                    data-mdb-ripple="true" data-mdb-ripple-color="light"
-                                                    class="inline-block px-6 py-2.5 bg-sky-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-sky-700 hover:shadow-lg focus:bg-sky-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-sky-700 active:shadow-lg transition duration-150 ease-in-out">
-                                                    Upload</a>
-                                            @elseif ($order->payment_status == 'Lunas')
-                                                <div
-                                                    class="inline-block px-6 py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md ">
-                                                    Lunas
                                                 </div>
                                             @endif
                                         </td>
