@@ -164,37 +164,6 @@
                     </div>
                 </div>
 
-                <div class="w-full lg:w-1/4">
-                    <div
-                        class="widget w-full p-4 rounded-lg bg-gray-100 shadow-md dark:bg-gray-700 border-l-4 border-orange-700">
-                        <div class="flex items-center">
-                            <div class="icon w-14 p-3.5 bg-orange-700 text-white rounded-full mr-3">
-                                <img src="https://img.icons8.com/ios-filled/100/ffffff/free-shipping.png"
-                                    alt="free-shipping" />
-                            </div>
-                            <div class="flex flex-col justify-center">
-                                <div class="text-lg text-black dark:text-white">{{ $free }}</div>
-                                <div class="text-sm text-gray-900 dark:text-gray-200">Gratis Pengiriman</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="w-full lg:w-1/4">
-                    <div
-                        class="widget w-full p-4 rounded-lg bg-gray-100 shadow-md dark:bg-gray-700 border-l-4 border-stone-800">
-                        <div class="flex items-center">
-                            <div class="icon w-14 p-3.5 bg-stone-800 text-white rounded-full mr-3">
-                                <img src="https://img.icons8.com/pastel-glyph/100/ffffff/shipping-service--v1.png"
-                                    alt="shipping-service--v1" />
-                            </div>
-                            <div class="flex flex-col justify-center">
-                                <div class="text-lg text-black dark:text-white">{{ $ekspedisi }}</div>
-                                <div class="text-sm text-gray-900 dark:text-gray-200">Ekspedisi</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="w-full p-4 bg-white rounded-lg shadow-md dark:bg-gray-700 mb-2 lg:mb-8">
                 <div class="flex justify-between items-center mb-4">
