@@ -37,7 +37,9 @@ class FullCustomController extends Controller
             'image_custom'    => 'required|image|file|max:1024'
         ]);
 
-        $image_custom = $request->file('image_custom')->store('gambar-fullcustom');
+        if ($request->hasFile('image_custom')) {
+            $image_custom = $request->file('image_custom')->store('', 'public');
+        }
 
         $cek_order = FullCustom::where('user_id', Auth::user()->id)->where('status', 0)->first();
         if (empty($cek_order)) {

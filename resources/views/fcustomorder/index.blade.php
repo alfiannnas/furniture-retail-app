@@ -45,8 +45,14 @@
                                             {{ Carbon\carbon::parse($custom->fullcustom_date)->format('d-m-Y') }}</td>
                                         <td class="px-4 py-3">{{ $custom->description }}</td>
                                         <td class="px-4 py-3">
-                                            <img src="{{ asset('storage/' . $custom->image_custom) }}"
-                                                class="mx-auto w-52 h-36">
+                                            @if ($custom->image_custom)
+                                                <img src="{{ asset('storage/' . $custom->image_custom) }}"
+                                                    class="mx-auto w-52 h-36 rounded-lg object-cover">
+                                            @else
+                                                <img src="https://img.icons8.com/ios/100/ffffff/nothing-found.png"
+                                                    alt="Gambar tidak tersedia"
+                                                    class="w-40 h-32 object-cover rounded-lg" />
+                                            @endif
                                         </td>
                                         <td class="px-4 py-3">
                                             <a href="/fullcustom/detail/{{ $custom->id }}" data-mdb-ripple="true"

@@ -54,9 +54,16 @@
                                             {{ Carbon\carbon::parse($custom->fullcustom_date)->format('d-m-Y') }}</td>
                                         <td class="px-4 py-3">{{ $custom->phone_number }}</td>
                                         <td class="px-4 py-3">{{ $custom->description }}</td>
-                                        <td class="px-4 py-3 w-52 p-4">
-                                            <img src="{{ asset('storage/' . $custom->image_custom) }}"
-                                                alt="gambar full custom">
+                                        <td class="px-4 py-3 w-52">
+                                            @if ($custom->image_custom)
+                                                <img src="{{ asset('storage/' . $custom->image_custom) }}"
+                                                    alt="gambar full custom"
+                                                    class="w-40 h-32 object-cover rounded shadow" />
+                                            @else
+                                                <img src="https://img.icons8.com/ios/100/ffffff/nothing-found.png"
+                                                    alt="gambar tidak tersedia"
+                                                    class="w-40 h-32 object-cover rounded shadow" />
+                                            @endif
                                         </td>
                                         <td class="flex flex-col items-center px-4 py-3 space-x-3">
                                             <a href="/admin/fullcustom/chat/{{ $custom->id }}"
