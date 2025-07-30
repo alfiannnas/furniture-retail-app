@@ -84,6 +84,7 @@
         <form action="/fullcustom/send" method="post" class="p-3 border-t bg-white dark:bg-gray-800">
             @csrf
             <div class="flex items-center space-x-2">
+                <input type="hidden" name="full_custom_id" value="{{ $fullCustom->id }}">
                 <textarea id="body" name="body" rows="1" autofocus
                     class="@error('body') is-invalid @enderror flex-1 resize-none p-2 text-sm rounded border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     placeholder="Ketik pesan"></textarea>

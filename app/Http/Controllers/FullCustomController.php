@@ -89,25 +89,27 @@ class FullCustomController extends Controller
 
     public function sendMessage(Request $request)
     {
+
         $validateData = $request->validate([
-            'body'     => 'required|max:250',
+            'body'           => 'required|max:250',
+            'full_custom_id' => 'required|exists:full_customs,id',
         ]);
 
-        $cek_fullcustom = FullCustom::where('user_id', Auth::user()->id)->where('status', 1)->first();
-        $cek_message = Message::where('user_id', Auth::user()->id)->where('full_custom_id', $cek_fullcustom->id)->first();
-        if (empty($cek_message)) {
-            $chatDetail = new Message;
-            $chatDetail->user_id = Auth::user()->id;
-            $chatDetail->full_custom_id = $cek_fullcustom->id;
-            $chatDetail->body = $request->body;
-            $chatDetail->save($validateData);
-        } else {
-            $chatDetail = new Message;
-            $chatDetail->user_id = Auth::user()->id;
-            $chatDetail->full_custom_id = $cek_fullcustom->id;
-            $chatDetail->body = $request->body;
-            $chatDetail->save($validateData);
+        $cek_fullcustom = FullCustom::where('id', $request->full_custom_id)
+            ->where('user_id', Auth::user()->id)
+            ->where('status', 1)
+            ->first();
+
+        if (!$cek_fullcustom) {
+            return back()->withErrors(['msg' => 'Order tidak ditemukan atau tidak aktif.']);
         }
+
+        $chatDetail = new Message;
+        $chatDetail->user_id = Auth::user()->id;
+        $chatDetail->full_custom_id = $cek_fullcustom->id;
+        $chatDetail->body = $request->body;
+        $chatDetail->save();
+
         $users = User::where('id', '!=', auth()->user()->id)->get();
         $user_create = auth()->user()->name;
         $userr = auth()->user()->id;
