@@ -58,6 +58,7 @@ class AdminFullCustomController extends Controller
     {
         $validateData = $request->validate([
             'body'     => 'required|max:250',
+            'full_custom_id' => 'required|exists:full_customs,id',
         ]);
 
         $fullcustom = FullCustom::where('id', $id)->where('status', 1)->first();
@@ -74,6 +75,14 @@ class AdminFullCustomController extends Controller
             $chatDetail->full_custom_id = $fullcustom->id;
             $chatDetail->body = $request->body;
             $chatDetail->save($validateData);
+        }
+        $isChatEnd = Message::where('full_custom_id', $fullcustom->id)
+            ->where('is_chat_end', 1)
+            ->exists();
+
+        if ($isChatEnd) {
+            Alert::error('Gagal', 'Pesan sudah berakhir, tidak dapat mengirim pesan lagi.');
+            return back();
         }
         $users = User::where('id', '!=', auth()->user()->id)->get();
         $user_create = auth()->user()->name;

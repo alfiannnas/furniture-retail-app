@@ -23,16 +23,9 @@
                 
                 <div class="text-xs flex items-center space-x-2">
                     @if($isChatEnd)
-                        <span class="text-red text-sm">Chat sudah berakhir</span>
+                        <span class="text-white text-sm">Chat sudah berakhir</span>
                     @else
-                        <span class="text-green text-sm">Chat masih berlangsung</span>
-                        <form action="{{ route('endChat', $fullCustom->id) }}" method="POST" onsubmit="return confirm('Akhiri chat ini?')">
-                            @csrf
-                            <button type="submit"
-                                class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-semibold">
-                                End Chat
-                            </button>
-                        </form>
+                        <span class="text-white text-sm">Chat masih berlangsung</span>
                     @endif
                 </div>
             </div>

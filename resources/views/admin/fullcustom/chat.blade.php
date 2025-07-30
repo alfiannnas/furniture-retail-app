@@ -20,16 +20,19 @@
             </div>
             <div>
                 <span class="text-gray-900 font-semibold">{{ $fullCustom->user->name }}</span>
-                <div class="text-xs text-blue-100">
-                @if($isChatEnd)
-                                <span class="text-red text-sm">
-                                    Chat sudah berakhir
-                                </span>
-                            @else
-                                <span class="text-green text-sm">
-                                    Chat masih berlangsung
-                                </span>
-                            @endif
+                                <div class="text-xs flex items-center space-x-2">
+                    @if($isChatEnd)
+                        <span class="text-white text-sm">Chat sudah berakhir</span>
+                    @else
+                        <span class="text-white text-sm">Chat masih berlangsung</span>
+                        <form action="{{ route('endChat', $fullCustom->id) }}" method="POST" onsubmit="return confirm('Akhiri chat ini?')">
+                            @csrf
+                            <button type="submit"
+                                class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-semibold">
+                                End Chat
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>
@@ -80,6 +83,7 @@
         <form action="/admin/fullcustom/send/{{ $fullCustom->id }}" method="post" class="p-3 border-t bg-white dark:bg-gray-800">
             @csrf
             <div class="flex items-center space-x-2">
+                <input type="hidden" name="full_custom_id" value="{{ $fullCustom->id }}">
                 <textarea id="body" name="body" rows="1" autofocus
                     class="@error('body') is-invalid @enderror flex-1 resize-none p-2 text-sm rounded border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     placeholder="Ketik pesan"></textarea>

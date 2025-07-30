@@ -89,7 +89,7 @@ class FullCustomController extends Controller
 
     public function sendMessage(Request $request)
     {
-
+        
         $validateData = $request->validate([
             'body'           => 'required|max:250',
             'full_custom_id' => 'required|exists:full_customs,id',
@@ -102,6 +102,15 @@ class FullCustomController extends Controller
 
         if (!$cek_fullcustom) {
             return back()->withErrors(['msg' => 'Order tidak ditemukan atau tidak aktif.']);
+        }
+
+        $isChatEnd = Message::where('full_custom_id', $cek_fullcustom->id)
+            ->where('is_chat_end', 1)
+            ->exists();
+
+        if ($isChatEnd) {
+            Alert::error('Gagal', 'Pesan sudah berakhir, tidak dapat mengirim pesan lagi.');
+            return back();
         }
 
         $chatDetail = new Message;
